@@ -146,3 +146,8 @@ Q. How we can handle surges in price?
 
 A. We can have a demand-supply mechanism. If the number of booking requests from a geocell are growing quite rapidly compared to the number of available drivers, a surge pricing can be applied.
 
+
+**Screenshots and Video Demo of the Project:**
+
+To be updated
+
