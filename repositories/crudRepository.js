@@ -25,14 +25,29 @@ class CrudRepository {
 
   async get(data) {
     try {
-      const result = await this.model.findOne(data);
-      console.log("Successfully queried the resource");
+      const result = await this.model.findOne(data).lean();
+      console.log("Successfully queried the resource with the specified filters");
       if (!result){
         throw new NotFoundError("auth", JSON.stringify(data));
       }
       return result;
     } catch (error) {
       console.error("Error while querying resource", error);
+      throw error;
+    }
+  }
+
+  async findById(id) {
+    try {
+      const response = await this.model.findById(id);
+      if (!response){
+        throw new NotFoundError("auth", id);
+      }
+      console.log("Successfully located the resource with id");
+      return response;
+    }
+    catch(error){
+      console.error("Error while locating the resource with id", error);
       throw error;
     }
   }

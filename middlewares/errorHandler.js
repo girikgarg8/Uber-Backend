@@ -7,15 +7,15 @@ function errorHandler(err, req, res, next) {
       success: false,
       message: err.message,
       error: err.details,
-      data: {}, //because this is an exception so no data is going to be provided
+      data: null, //because this is an exception so no data is going to be provided
     });
   }
 
   return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     success: false,
     message: "Something went wrong",
-    error: {}, // to not send any sensitive information as part of the API response
-    data: {},
+    error: null, // to not send any sensitive information as part of the API response
+    data: null,
   });
 }
 

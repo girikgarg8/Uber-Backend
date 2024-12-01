@@ -1,5 +1,6 @@
-const { BadRequestError } = require("../errors");
+const { BadRequestError, ForbiddenError } = require("../errors");
 const { AuthService } = require("../services");
+const { roleUtil } = require("../utils");
 
 function validateSignupRequest(req, res, next) {
   if (!req.body.name) {
@@ -29,7 +30,7 @@ function validateSigninRequest(req, res, next) {
 
 async function verifyToken(req, res, next){
   try{
-    const response = await AuthService.isAuthenticated(req.headers['x-access-token']);
+    const response = await AuthService.validateAuthenticationToken(req.headers['x-access-token']);
     if (response){
       req.user = response; //attaching the logged in user information in the request object, this will be useful in downstream services calls to identify the logged in user
       next();
@@ -41,4 +42,16 @@ async function verifyToken(req, res, next){
   }
 }
 
-module.exports = { validateSignupRequest, validateSigninRequest, verifyToken };
+async function validatePassengerRole(req, res, next) {
+  try {
+    const role = await AuthService.getRole(req.user);
+    if (!roleUtil.isPassengerRole(role)) throw new ForbiddenError('Only user with passenger role is permitted to perform this operation'); 
+    next();
+  }
+  catch(error){
+    console.error("Error while validating passenger role", error);
+    next(error);
+  }
+}
+
+module.exports = { validateSignupRequest, validateSigninRequest, verifyToken, validatePassengerRole };

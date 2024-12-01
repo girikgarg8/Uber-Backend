@@ -1,4 +1,4 @@
-const { UnauthorizedError, BadRequestError, NotFoundError } = require("../errors");
+const { UnauthorizedError, NotFoundError } = require("../errors");
 const { AuthRepository } = require("../repositories");
 const { authUtil } = require("../utils");
 
@@ -32,10 +32,10 @@ async function signin(data) {
   }
 }
 
-async function isAuthenticated(token){
+async function validateAuthenticationToken(token){
   try {
     if (!token) {
-      throw new BadRequestError("auth", "Missing JWT Token");
+      throw new UnauthorizedError("Missing JWT Token");
     }
     const response = authUtil.verifyToken(token);
     const user = await authRepository.get({ _id: response.id }); // additional level of check, to ensure that JWT token is not a stale token, and the logged in user still exists
@@ -55,4 +55,15 @@ async function isAuthenticated(token){
   }
 }
 
-module.exports = { signup, signin, isAuthenticated };
+async function getRole (id) {
+  try{
+    const user = await authRepository.findById(id);
+    return user.role;
+  }
+  catch(error) {
+    console.error("Error while querying the role for user in service layer", id);
+    throw error;
+  }
+}
+
+module.exports = { signup, signin, validateAuthenticationToken, getRole };

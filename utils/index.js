@@ -3,4 +3,5 @@ module.exports = {
   redisUtil: require("./redisUtil"),
   responseUtil: require("./responseUtil"),
   authUtil: require("./authUtil"),
+  roleUtil: require("./roleUtil"),
 };
